@@ -1,0 +1,41 @@
+# 一键编排：MySQL + Redis + 后端 + 前端
+# 使用：docker compose up -d --build
+
+services:
+  db:
+    image: mysql:8
+    environment:
+      MYSQL_ROOT_PASSWORD: root123
+      MYSQL_DATABASE: underwriting
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+
+  backend:
+    build: ./backend
+    environment:
+      # 通过环境变量覆盖应用配置（见 backend/app/core/config.py）
+      DATABASE_URL: mysql+pymysql://root:root123@db:3306/underwriting?charset=utf8mb4
+      JWT_SECRET: please-change-me-in-production
+      USE_CELERY: "true"
+    ports:
+      - "18080:8000"
+    depends_on:
+      - db
+      - redis
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "8080:80"
+    depends_on:
+      - backend
+
+volumes:
+  db_data:

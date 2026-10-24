@@ -1,0 +1,4 @@
+# 构建上下文排除项，减小镜像体积
+node_modules
+dist
+.git

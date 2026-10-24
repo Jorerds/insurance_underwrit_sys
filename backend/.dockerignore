@@ -1,0 +1,9 @@
+# 构建上下文排除项，减小镜像体积
+.venv
+__pycache__
+*.pyc
+.pytest_cache
+underwriting.db
+dist
+node_modules
+.git
